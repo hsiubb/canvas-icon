@@ -10,68 +10,69 @@ function angleToRadian(x) {
 }
 
 (function() {
-  let icons = {};
-  let canvas = document.getElementById('canvasIcon');
-  let context = canvas.getContext("2d");
+	let canvas = document.getElementById('canvasIcon');
+	let context = canvas.getContext("2d");
 
-  let bgColor = COLOR_BLUE;
-  let itemColor = COLOR_WHITE;
+	let bgColor = COLOR_BLUE;
+	let itemColor = COLOR_WHITE;
 
-  canvas.style.width  = canvas.width  = FULL_WIDTH;
-  canvas.style.height = canvas.height = FULL_HEIGHT;
+	canvas.style.width  = canvas.width  = FULL_WIDTH;
+	canvas.style.height = canvas.height = FULL_HEIGHT;
 
-  context.fillStyle = COLOR_BLUE;
-  context.fillRect(0, 0, FULL_WIDTH, FULL_HEIGHT);
+	context.fillStyle = COLOR_BLUE;
+	context.fillRect(0, 0, FULL_WIDTH, FULL_HEIGHT);
 
-  icons.spaceship = function(size, color, x, y, angle) {
-    let ship = {};
-    ship.update = function(x, y) {
-        context.save();
-          context.beginPath();
-            context.translate(x, y);
-            context.rotate(angleToRadian(angle));
-            context.moveTo( - size / 2 , size / 2 - 2 );
-            context.lineTo( - 1        , size * .3    );
-            context.lineTo( - 1        , - size / 2   );
-            context.moveTo(   1        , - size / 2   );
-            context.lineTo(   1        , size * .3    );
-            context.lineTo( size / 2   , size / 2 - 2 );
-          context.closePath();
-          context.fillStyle = color;
-          context.fill();
-        context.restore();
-    };
-
-    ship.left   = x - size / 2;
-    ship.right  = x + size / 2;
-    ship.top    = y - size / 2;
-    ship.bottom = y + size / 2;
-
-    ship.update(x, y);
-
-    return ship;
-  };
-
-  icons.create = function(options) {
-    icons[options.element](options.size || 20, options.color || itemColor, options.x || 0, options.y || 0, options.angle || 0);
-  };
-  icons.update = function(element) {
+  let icons = {
+		create: function(element) {
+			element.size  = element.element || 20;
+			element.color = element.color   || itemColor;
+			element.x     = element.x       || 0;
+			element.y     = element.y       || 0;
+			element.angle = element.angle   || 0;
+		  icons[element.type].init(element);
+			return element;
+	  },
+		update: function(element) {
       context.save();
         context.beginPath();
-          context.translate(options.x || 0, options.y);
-          context.rotate(angleToRadian(options.angle || 0));
-
+          context.translate(element.x, element.y);
+          context.rotate(angleToRadian(element.angle));
+			    icons[element.type].update(element);
         context.closePath();
-        context.fillStyle = options.color || itemColor;
+        context.fillStyle = element.color;
         context.fill();
       context.restore();
-  };
+		},
+		spaceship: {
+			name: 'spaceship',
+			init: function(element) {
+		    element.left   = element.x - element.size / 2;
+		    element.right  = element.x + element.size / 2;
+		    element.top    = element.y - element.size / 2;
+		    element.bottom = element.y + element.size / 2;
+
+		    icons.update(element);
+			},
+			update: function(element) {
+				context.moveTo( - element.size / 2 , element.size / 2 - 2 );
+				context.lineTo( - 1                , element.size * .3    );
+				context.lineTo( - 1                , - element.size / 2   );
+				context.moveTo(   1                , - element.size / 2   );
+				context.lineTo(   1                , element.size * .3    );
+				context.lineTo( element.size / 2   , element.size / 2 - 2 );
+			}
+	  }
+	};
 
   let ship = icons.create({
-    element: 'spaceship',
+    type: 'spaceship',
     size: 20,
     x: 20,
     y: 20
   });
+
+	ship.x = 50;
+	ship.y = 50;
+  icons.update(ship);
 
 }());
