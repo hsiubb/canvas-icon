@@ -1,0 +1,27 @@
+@charset "utf-8";
+
+*, :before, :after {-webkit-box-sizing: border-box;-ms-box-sizing: border-box;box-sizing: border-box;}
+html{font-family: Arial,sans-serif;line-height:1.6;font-size:14px;color:#666;background:#fff;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}
+body,div{margin:0;padding:0}
+html,body{
+	height: 100%;
+	overflow: hidden;
+}
+
+.game-box {
+	position: fixed;
+	top: 0;
+	right: 0;
+	left: 0;
+	bottom: 0;
+	z-index: 1;
+}
+#gameBox {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 0;
+	height: 0;
+	z-index: 2;
+	transform: translate(-50%, -50%);
+}
